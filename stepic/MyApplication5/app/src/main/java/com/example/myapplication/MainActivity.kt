@@ -2,8 +2,10 @@ package com.example.myapplication
 
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -19,7 +21,11 @@ import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import io.realm.RealmList
+import io.realm.RealmObject
 import java.util.*
+import io.realm.Realm
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,14 +43,37 @@ class MainActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
 
         request = o.subscribe({
-            vRecView.adapter = RecAdapter(it.items)
-            vRecView.layoutManager = LinearLayoutManager(this)
+            val feed =
+                Feed(it.items.mapTo(RealmList<FeedItem>()) { i -> FeedItem(i.title, i.link, i.thumbnail, i.description) })
+
+            Realm.getDefaultInstance().executeTransaction { realm ->
+
+                val oldList = realm.where(Feed::class.java).findAll()
+                if (oldList.size > 0)
+                    for (i in oldList)
+                        i.deleteFromRealm()
+
+                realm.copyToRealm(feed)
+            }
+
+            showRecView()
         }, {
             Log.e("tag", "", it)
+            showRecView()
         })
 
 
         Log.e("tag", "был запущен onCreate")
+    }
+
+    fun showRecView() {
+        Realm.getDefaultInstance().executeTransaction { realm ->
+            val feed = realm.where(Feed::class.java).findAll()
+            if (feed.size > 0) {
+                vRecView.adapter = RecAdapter(feed[0]!!.items)
+                vRecView.layoutManager = LinearLayoutManager(this)
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -65,7 +94,19 @@ class FeedItemAPI(
     val guid: String
 )
 
-class RecAdapter(val items: ArrayList<FeedItemAPI>) : RecyclerView.Adapter<RecHolder>() {
+open class Feed(
+    var items: RealmList<FeedItem> = RealmList<FeedItem>()
+) : RealmObject()
+
+open class FeedItem(
+    var title: String = "",
+    var link: String = "",
+    var thumbnail: String = "",
+    var description: String = "",
+    var guid: String = ""
+) : RealmObject()
+
+class RecAdapter(val items: RealmList<FeedItem>) : RecyclerView.Adapter<RecHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -80,7 +121,7 @@ class RecAdapter(val items: ArrayList<FeedItemAPI>) : RecyclerView.Adapter<RecHo
     }
 
     override fun onBindViewHolder(holder: RecHolder, position: Int) {
-        val item = items[position]
+        val item = items[position]!!
 
         holder.bind(item)
     }
@@ -93,7 +134,7 @@ class RecAdapter(val items: ArrayList<FeedItemAPI>) : RecyclerView.Adapter<RecHo
 
 class RecHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    fun bind(item: FeedItemAPI) {
+    fun bind(item: FeedItem) {
         val vTitle = itemView.findViewById<TextView>(R.id.item_title)
         val vDesc = itemView.findViewById<TextView>(R.id.item_desc)
         val vThumb = itemView.findViewById<ImageView>(R.id.item_thumb)
