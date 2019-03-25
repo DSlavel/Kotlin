@@ -1,13 +1,6 @@
 package com.example.myapplication
-
-
-import android.content.Intent
-import android.content.res.Configuration
-import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.util.Log
@@ -16,70 +9,44 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.google.gson.Gson
 import com.squareup.picasso.Picasso
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import io.realm.RealmList
 import io.realm.RealmObject
 import java.util.*
-import io.realm.Realm
-
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var vRecView: RecyclerView
-    var request: Disposable? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_fragment)
 
-        vRecView = findViewById<RecyclerView>(R.id.act1_recView)
-        val o =
-            createRequest("https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Ffeeds.bbci.co.uk%2Fnews%2Frss.xml")
-                .map { Gson().fromJson(it, FeedAPI::class.java) }
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-
-        request = o.subscribe({
-            val feed =
-                Feed(it.items.mapTo(RealmList<FeedItem>()) { i -> FeedItem(i.title, i.link, i.thumbnail, i.description) })
-
-            Realm.getDefaultInstance().executeTransaction { realm ->
-
-                val oldList = realm.where(Feed::class.java).findAll()
-                if (oldList.size > 0)
-                    for (i in oldList)
-                        i.deleteFromRealm()
-
-                realm.copyToRealm(feed)
-            }
-
-            showRecView()
-        }, {
-            Log.e("tag", "", it)
-            showRecView()
-        })
-
+        if (savedInstanceState == null) {
+            val bundle = Bundle()
+            bundle.putString("param", "value")
+            val f = MainFragment()
+            f.arguments = bundle
+            supportFragmentManager.beginTransaction().replace(R.id.fragment_place, f).commitAllowingStateLoss()
+        }
 
         Log.e("tag", "был запущен onCreate")
     }
 
-    fun showRecView() {
-        Realm.getDefaultInstance().executeTransaction { realm ->
-            val feed = realm.where(Feed::class.java).findAll()
-            if (feed.size > 0) {
-                vRecView.adapter = RecAdapter(feed[0]!!.items)
-                vRecView.layoutManager = LinearLayoutManager(this)
-            }
-        }
+    fun showArticle(url: String) {
+
+        val bundle = Bundle()
+        bundle.putString("url", url)
+        val f = SecondFragment()
+        f.arguments = bundle
+
+        val frame2 = findViewById<View>(R.id.frag2_browser)
+        if (frame2 != null) {
+            frame2.visibility = View.VISIBLE
+            supportFragmentManager.beginTransaction().replace(R.id.frag2_browser, f).commitAllowingStateLoss()
+        } else
+            supportFragmentManager.beginTransaction().add(R.id.fragment_place, f).addToBackStack("main")
+                .commitAllowingStateLoss()
     }
 
-    override fun onDestroy() {
-        request?.dispose()
-        super.onDestroy()
-    }
 }
 
 class FeedAPI(
@@ -144,9 +111,7 @@ class RecHolder(view: View) : RecyclerView.ViewHolder(view) {
         Picasso.with(vThumb.context).load(item.thumbnail).into(vThumb)
 
         itemView.setOnClickListener {
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(item.link)
-            vThumb.context.startActivity(i)
+            (vThumb.context as MainActivity).showArticle(item.link)
         }
     }
 
