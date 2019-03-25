@@ -1,4 +1,6 @@
 package com.example.myapplication
+
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
@@ -38,14 +40,16 @@ class MainActivity : AppCompatActivity() {
         val f = SecondFragment()
         f.arguments = bundle
 
-        val frame2 = findViewById<View>(R.id.frag2_browser)
-        if (frame2 != null) {
-            frame2.visibility = View.VISIBLE
-            supportFragmentManager.beginTransaction().replace(R.id.frag2_browser, f).commitAllowingStateLoss()
-        } else
-            supportFragmentManager.beginTransaction().add(R.id.fragment_place, f).addToBackStack("main")
-                .commitAllowingStateLoss()
+        supportFragmentManager.beginTransaction().add(R.id.fragment_place, f).addToBackStack("main")
+            .commitAllowingStateLoss()
     }
+
+    fun playMusic(url: String) {
+        val i = Intent(this, PlayService::class.java)
+        i.putExtra("mp3", url)
+        startService(i)
+    }
+
 
 }
 
@@ -111,7 +115,8 @@ class RecHolder(view: View) : RecyclerView.ViewHolder(view) {
         Picasso.with(vThumb.context).load(item.thumbnail).into(vThumb)
 
         itemView.setOnClickListener {
-            (vThumb.context as MainActivity).showArticle(item.link)
+            //            (vThumb.context as MainActivity).showArticle(item.link)
+            (vThumb.context as MainActivity).playMusic(item.guid)
         }
     }
 
