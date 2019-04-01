@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditProfileActivity">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="@style/toolbar"
+            app:contentInsetStart="0dp"
+            tools:ignore="MissingConstraints">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/close_image"
+                    style="@style/toolbar_image"
+                    android:src="@drawable/ic_close"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    style="@style/toolbar_title"
+                    android:text="Edit Profile"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/close_image"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/save_image"
+                    style="@style/toolbar_image"
+                    android:src="@drawable/ic_check"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/progile_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/android_picture"
+            app:civ_border_color="@color/grey"
+            app:civ_border_width="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+        <TextView
+            android:id="@+id/name_label"
+            style="@style/edit_profile_label"
+            android:labelFor="@id/name_input"
+            android:text="Name"
+            app:layout_constraintTop_toBottomOf="@id/progile_image"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/name_input"
+            style="@style/edit_profile_input"
+            android:inputType="text"
+            app:layout_constraintTop_toBottomOf="@id/name_label"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/username_label"
+            style="@style/edit_profile_label"
+            android:labelFor="@id/username_input"
+            android:text="Username"
+            android:textColor="@color/grey"
+            app:layout_constraintTop_toBottomOf="@id/name_input"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/username_input"
+            style="@style/edit_profile_input"
+            android:inputType="text"
+            app:layout_constraintTop_toBottomOf="@id/username_label"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/website_label"
+            style="@style/edit_profile_label"
+            android:labelFor="@id/username_input"
+            android:text="Website"
+            android:textColor="@color/grey"
+            app:layout_constraintTop_toBottomOf="@id/username_input"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/website_input"
+            style="@style/edit_profile_input"
+            android:inputType="text"
+            app:layout_constraintTop_toBottomOf="@id/website_label"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/bio_label"
+            style="@style/edit_profile_label"
+            android:labelFor="@id/website_input"
+            android:text="BIO"
+            android:textColor="@color/grey"
+            app:layout_constraintTop_toBottomOf="@id/website_input"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/bio_input"
+            style="@style/edit_profile_input"
+            android:inputType="text"
+            app:layout_constraintTop_toBottomOf="@id/bio_label"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/privite_info_text"
+            style="@style/edit_profile_label"
+            android:layout_marginTop="30dp"
+            android:labelFor="@id/website_input"
+            android:text="Provite Information"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/bio_input"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/email_label"
+            style="@style/edit_profile_label"
+            android:labelFor="@id/email_input"
+            android:text="Email"
+            android:textColor="@color/grey"
+            app:layout_constraintTop_toBottomOf="@id/privite_info_text"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/email_input"
+            style="@style/edit_profile_input"
+            android:inputType="textEmailAddress"
+            app:layout_constraintTop_toBottomOf="@id/email_label"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/phone_label"
+            style="@style/edit_profile_label"
+            android:labelFor="@id/phone_input"
+            android:text="Phone"
+            android:textColor="@color/grey"
+            app:layout_constraintTop_toBottomOf="@id/email_input"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/phone_input"
+            style="@style/edit_profile_input"
+            android:inputType="phone"
+            app:layout_constraintTop_toBottomOf="@id/phone_label"
+
+            tools:ignore="MissingConstraints" />
+
+
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>
