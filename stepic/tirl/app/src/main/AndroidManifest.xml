@@ -22,7 +22,8 @@
         <activity android:name=".SearchActivity"/>
         <activity android:name=".ProfileActivity"/>
         <activity android:name=".ShareActivity"/>
-        <activity android:name=".LikesActivity"/>
+        <activity android:name=".LikesActivity"
+        android:windowSoftInputMode="stateVisible|adjustResize"/>
     </application>
 
 </manifest>
