@@ -21,14 +21,14 @@ class EditProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_edit_profile)
         Log.d(TAG, "onCreate")
 
-        close_image.setOnClickListener{
+        close_image.setOnClickListener {
             finish()
         }
+
         val auth = FirebaseAuth.getInstance()
         val database = FirebaseDatabase.getInstance().reference
         database.child("users").child(auth.currentUser!!.uid)
             .addListenerForSingleValueEvent(ValueEventListenerAdapter {
-
                 val user = it.getValue(User::class.java)
                 name_input.setText(user!!.name, TextView.BufferType.EDITABLE)
                 username_input.setText(user.username, TextView.BufferType.EDITABLE)
@@ -36,9 +36,6 @@ class EditProfileActivity : AppCompatActivity() {
                 bio_input.setText(user.bio, TextView.BufferType.EDITABLE)
                 email_input.setText(user.email, TextView.BufferType.EDITABLE)
                 phone_input.setText(user.phone.toString(), TextView.BufferType.EDITABLE)
-
-
             })
     }
 }
-

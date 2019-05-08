@@ -9,9 +9,8 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".activities.RegistresActivity">
-        </activity>
-        <activity android:name=".activities.LoginActivity">
+
+        <activity android:name=".activities.LikesActivity">
         </activity>
         <activity android:name=".activities.EditProfileActivity"/>
         <activity android:name=".activities.HomeActivity">
@@ -25,7 +24,10 @@
         <activity android:name=".activities.ProfileActivity"/>
         <activity android:name=".activities.ShareActivity"/>
         <activity
-                android:name=".activities.LikesActivity"
+                android:name=".activities.LoginActivity"
+                android:windowSoftInputMode="stateVisible|adjustResize"/>
+        <activity
+                android:name=".activities.RegisterActivity"
                 android:windowSoftInputMode="stateVisible|adjustResize"/>
     </application>
 
