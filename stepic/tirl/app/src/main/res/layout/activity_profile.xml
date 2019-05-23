@@ -8,6 +8,7 @@
     tools:context=".activities.HomeActivity">
 
     <android.support.v7.widget.Toolbar
+
         android:id="@+id/toolbar"
         style="@style/toolbar"
         tools:ignore="MissingConstraints">
@@ -17,8 +18,8 @@
             android:layout_height="wrap_content">
 
             <TextView
+                    android:id="@+id/username_text"
                 style="@style/toolbar_title"
-                android:text="DSlavel"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -41,7 +42,7 @@
         android:layout_marginEnd="15dp"
         android:layout_marginStart="15dp"
         android:layout_marginTop="15dp"
-        android:src="@drawable/android_picture"
+        android:src="@drawable/person"
         app:civ_border_color="@color/grey"
         app:civ_border_width="1dp"
         app:layout_constraintDimensionRatio="1:1"
@@ -118,6 +119,20 @@
         app:layout_constraintHorizontal_weight="5"
         app:layout_constraintStart_toEndOf="@id/profile_image" />
 
+    <android.support.v7.widget.RecyclerView
+            android:id="@+id/image_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/top_border_grey"
+            app:layout_constraintTop_toBottomOf="@id/edit_profile_btn"
+            app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view"
+            tools:ignore="MissingConstraints">
+
+    </android.support.v7.widget.RecyclerView>
+
     <include layout="@layout/button_navigation_view"/>
+
+
 
 </android.support.constraint.ConstraintLayout>

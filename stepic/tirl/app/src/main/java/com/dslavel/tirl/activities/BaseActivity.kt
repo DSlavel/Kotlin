@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.button_navigation_view.*
 abstract class BaseActivity(val navNumber: Int) : AppCompatActivity() {
     private val TAG = "BaseActivity"
 
+
     fun setupBottomNavigation() {
         bottom_navigation_view.setIconSize(29f, 29f)
         bottom_navigation_view.setTextVisibility(false)
@@ -41,6 +42,16 @@ abstract class BaseActivity(val navNumber: Int) : AppCompatActivity() {
                 false
             }
         }
-        bottom_navigation_view.menu.getItem(navNumber).isChecked = true
+
+
+
     }
+
+    override fun onResume() {
+        super.onResume()
+        if (bottom_navigation_view != null) {
+            bottom_navigation_view.menu.getItem(navNumber).isChecked = true
+        }
+    }
+
 }
