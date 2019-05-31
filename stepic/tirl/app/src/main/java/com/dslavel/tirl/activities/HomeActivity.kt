@@ -2,37 +2,34 @@ package com.dslavel.tirl.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
 import com.dslavel.tirl.R
+import com.dslavel.tirl.utils.FirebaseHelper
+import com.dslavel.tirl.utils.GlideApp
+import com.dslavel.tirl.utils.ValueEventListenerAdapter
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.activity_share.view.*
 
 class HomeActivity : BaseActivity(0) {
     private val TAG = "HomeActivity"
-    private lateinit var nAuth: FirebaseAuth
+    private lateinit var mFirebase: FirebaseHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         Log.d(TAG, "onCreate")
         setupBottomNavigation()
 
-
-        nAuth = FirebaseAuth.getInstance()
-        //nAuth.signOut()
-        /*
-       auth.signInWithEmailAndPassword("dslavel@dslavel.com","password")
-           .addOnCompleteListener(){
-               if (it.isSuccessful){
-                   Log.d(TAG, "signIn: succes")
-               } else {
-                   Log.e(TAG, "signIn: falure", it.exception )
-               }
-           }*/
-        sign_out_text.setOnClickListener {
-            nAuth.signOut()
-        }
-        nAuth.addAuthStateListener {
-            if (it.currentUser == null){
+        mFirebase = FirebaseHelper(this)
+        mFirebase.auth.addAuthStateListener {
+            if (it.currentUser == null) {
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
             }
@@ -41,11 +38,39 @@ class HomeActivity : BaseActivity(0) {
 
     override fun onStart() {
         super.onStart()
-        if (nAuth.currentUser == null){
+        val currentUser = mFirebase.auth.currentUser
+        if (currentUser == null) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
+        } else {
+            mFirebase.database.child("feed-posts").child(currentUser.uid)
+                .addValueEventListener(ValueEventListenerAdapter {
+                    val posts = it.children.map { it.getValue(FeedPost::class.java)!! }
+                    Log.d(TAG, "feedPosts: ${posts.first().timestampDate()}")
+                    feed_recycler.adapter = FeedAdapter(posts)
+                    feed_recycler.layoutManager = LinearLayoutManager(this)
+                })
         }
     }
+}
+class FeedAdapter(private val posts: List<FeedPost>)
+    : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
 
+    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.feed_item, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.view.post_image.loadImage(posts[position].image)
+    }
+
+    override fun getItemCount() = posts.size
+
+    private fun ImageView.loadImage(image: String) {
+        GlideApp.with(this).load(image).centerCrop().into(this)
+    }
 }
